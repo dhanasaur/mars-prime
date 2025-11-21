@@ -57,7 +57,7 @@ export default function RequestLifecycle() {
               <h3 className="font-semibold text-sm">{status}</h3>
               <StatusBadge status={status} type="request" />
             </div>
-            <div className="space-y-2">
+            <div className="space-y-2 max-h-[calc(3*180px)] overflow-y-auto pr-1">
               {items.map((request) => (
                 <Card key={request.id} className="p-4 hover:shadow-md transition-shadow cursor-pointer">
                   <div className="space-y-2">

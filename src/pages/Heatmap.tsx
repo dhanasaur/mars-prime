@@ -21,7 +21,7 @@ export default function Heatmap() {
     if (!mapRef.current) return;
 
     if (!mapInstanceRef.current) {
-      mapInstanceRef.current = L.map(mapRef.current).setView([28.6448, 77.2167], 11);
+      mapInstanceRef.current = L.map(mapRef.current).setView([11.0168, 76.9558], 12);
 
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors',
@@ -62,7 +62,7 @@ export default function Heatmap() {
   }, [regionData]);
 
   const getRadius = (donations) => {
-    return Math.max(10, Math.min(40, donations / 20));
+    return Math.max(8, Math.min(35, donations / 15));
   };
 
   const getColor = (criticalRequests) => {
@@ -123,7 +123,7 @@ export default function Heatmap() {
               <CardTitle className="text-base">Regional Stats</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="space-y-4">
+              <div className="space-y-4 max-h-[365px] overflow-y-auto pr-2">
                 {regionData.map((region) => (
                   <div key={region.region} className="space-y-2 pb-3 border-b last:border-0">
                     <p className="font-medium text-sm">{region.region}</p>

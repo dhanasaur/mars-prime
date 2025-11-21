@@ -4,7 +4,7 @@ import KPICard from '@/components/dashboard/KPICard';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
+import { BarChart, Bar, LineChart, Line, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Brush, Area, AreaChart } from 'recharts';
 import { fetchHospitals, fetchDonorStats, fetchInventoryStats, fetchRequests, fetchDailyDonations } from '@/api/mockApi';
 import { toast } from 'sonner';
 
@@ -141,22 +141,56 @@ export default function Overview() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle>Daily Donations Trend</CardTitle>
+            <CardTitle>Donations Trend</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={dailyDonations}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="date" tick={{ fontSize: 12 }} />
-                <YAxis />
-                <Tooltip />
-                <Line 
+              <AreaChart data={dailyDonations}>
+                <defs>
+                  <linearGradient id="colorDonations" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis 
+                  dataKey="date" 
+                  tick={{ fontSize: 11 }} 
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                  }}
+                />
+                <YAxis tick={{ fontSize: 11 }} />
+                <Tooltip 
+                  contentStyle={{ 
+                    backgroundColor: 'hsl(var(--card))', 
+                    border: '1px solid hsl(var(--border))',
+                    borderRadius: '6px'
+                  }}
+                  labelFormatter={(value) => new Date(value).toLocaleDateString()}
+                />
+                <Area 
                   type="monotone" 
                   dataKey="donations" 
                   stroke="hsl(var(--primary))" 
-                  strokeWidth={2}
+                  strokeWidth={2.5}
+                  fill="url(#colorDonations)"
+                  animationDuration={1500}
+                  dot={false}
+                  activeDot={{ r: 6, strokeWidth: 2 }}
                 />
-              </LineChart>
+                <Brush 
+                  dataKey="date" 
+                  height={30} 
+                  stroke="hsl(var(--primary))"
+                  fill="hsl(var(--muted))"
+                  tickFormatter={(value) => {
+                    const date = new Date(value);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                  }}
+                />
+              </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>

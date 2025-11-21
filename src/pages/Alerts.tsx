@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button';
 import StatusBadge from '@/components/dashboard/StatusBadge';
 import { fetchAlerts } from '@/api/mockApi';
 import { AlertTriangle, Activity, Info, Zap } from 'lucide-react';
+import { toast } from 'sonner';
 
 export default function Alerts() {
   const [alerts, setAlerts] = useState([]);
+  const [gdraActive, setGdraActive] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
@@ -40,6 +42,19 @@ export default function Alerts() {
         return Info;
       default:
         return Activity;
+    }
+  };
+
+  const handleGDRAActivation = () => {
+    setGdraActive(!gdraActive);
+    if (!gdraActive) {
+      toast.success('GDRA Mode Activated', {
+        description: 'Disaster response protocols are now active. All hospitals notified.',
+      });
+    } else {
+      toast.info('GDRA Mode Deactivated', {
+        description: 'System returned to normal operations.',
+      });
     }
   };
 
@@ -125,9 +140,13 @@ export default function Alerts() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle>Alert Log</CardTitle>
-            <Button variant="outline" className="gap-2">
+            <Button 
+              variant={gdraActive ? "default" : "outline"} 
+              className={`gap-2 transition-all ${gdraActive ? 'animate-pulse' : ''}`}
+              onClick={handleGDRAActivation}
+            >
               <Zap className="w-4 h-4" />
-              Activate GDRA Mode
+              {gdraActive ? 'GDRA Active' : 'Activate GDRA Mode'}
             </Button>
           </div>
         </CardHeader>
